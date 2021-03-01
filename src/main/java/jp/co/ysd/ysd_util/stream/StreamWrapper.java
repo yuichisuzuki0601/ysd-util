@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -17,15 +18,15 @@ import java.util.stream.Stream;
  *
  * @param <T>
  */
-public class CollectionWrapper<T> {
+public class StreamWrapper<T> {
 
 	private Stream<T> stream;
 
-	CollectionWrapper(Collection<T> list) {
+	StreamWrapper(Collection<T> list) {
 		this.stream = list.stream();
 	}
 
-	private CollectionWrapper(Stream<T> stream) {
+	private StreamWrapper(Stream<T> stream) {
 		this.stream = stream;
 	}
 
@@ -33,24 +34,24 @@ public class CollectionWrapper<T> {
 		return stream;
 	}
 
-	public CollectionWrapper<T> concat(CollectionWrapper<T> other) {
-		return new CollectionWrapper<T>(Stream.concat(stream, other.stream));
+	public StreamWrapper<T> concat(StreamWrapper<T> other) {
+		return new StreamWrapper<T>(Stream.concat(stream, other.stream));
 	}
 
 	public long count() {
 		return stream.count();
 	}
 
-	public CollectionWrapper<T> distinct() {
-		return new CollectionWrapper<T>(stream.distinct());
+	public StreamWrapper<T> distinct() {
+		return new StreamWrapper<T>(stream.distinct());
 	}
 
 	public boolean every(Predicate<T> predicate) {
 		return stream.allMatch(predicate);
 	}
 
-	public CollectionWrapper<T> filter(Predicate<T> predicate) {
-		return new CollectionWrapper<T>(stream.filter(predicate));
+	public StreamWrapper<T> filter(Predicate<T> predicate) {
+		return new StreamWrapper<T>(stream.filter(predicate));
 	}
 
 	public T find(Predicate<T> predicate) {
@@ -61,8 +62,8 @@ public class CollectionWrapper<T> {
 		return stream.filter(predicate).findFirst().orElse(orElse);
 	}
 
-	public <R> CollectionWrapper<R> flatMap(Function<T, Stream<R>> mapper) {
-		return new CollectionWrapper<R>(stream.flatMap(mapper));
+	public <R> StreamWrapper<R> flatMap(Function<T, Stream<R>> mapper) {
+		return new StreamWrapper<R>(stream.flatMap(mapper));
 	}
 
 	public void forEach(Consumer<T> action) {
@@ -73,8 +74,8 @@ public class CollectionWrapper<T> {
 		return stream.collect(Collectors.groupingBy(function));
 	}
 
-	public <R> CollectionWrapper<R> map(Function<T, R> mapper) {
-		return new CollectionWrapper<R>(stream.map(mapper));
+	public <R> StreamWrapper<R> map(Function<T, R> mapper) {
+		return new StreamWrapper<R>(stream.map(mapper));
 	}
 
 	public T max(Comparator<T> comparator) {
@@ -105,8 +106,8 @@ public class CollectionWrapper<T> {
 		return stream.anyMatch(predicate);
 	}
 
-	public CollectionWrapper<T> sort(Comparator<? super T> comparator) {
-		return new CollectionWrapper<>(stream.sorted(comparator));
+	public StreamWrapper<T> sort(Comparator<? super T> comparator) {
+		return new StreamWrapper<>(stream.sorted(comparator));
 	}
 
 	public List<T> end() {
@@ -115,6 +116,15 @@ public class CollectionWrapper<T> {
 
 	public <K> Map<K, T> end(Function<T, K> keyMapper) {
 		return stream.collect(Collectors.toMap(keyMapper, t -> t));
+	}
+
+	public <K, V> Map<K, V> end(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+		return stream.collect(Collectors.toMap(keyMapper, valueMapper));
+	}
+
+	@SuppressWarnings("unchecked")
+	public <K, V> Map<K, V> remap() {
+		return end(t -> ((Entry<K, V>) t).getKey(), t -> ((Entry<K, V>) t).getValue());
 	}
 
 }
