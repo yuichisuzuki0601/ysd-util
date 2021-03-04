@@ -2,6 +2,7 @@ package jp.co.ysd.ysd_util.stream;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -110,16 +111,24 @@ public class StreamWrapper<T> {
 		return new StreamWrapper<>(stream.sorted(comparator));
 	}
 
+	public <V extends Comparable<V>> StreamWrapper<T> sortAsc(Function<T, V> mapper) {
+		return sort((l, r) -> mapper.apply(l).compareTo(mapper.apply(r)));
+	}
+
+	public <V extends Comparable<V>> StreamWrapper<T> sortDesc(Function<T, V> mapper) {
+		return sort((l, r) -> mapper.apply(r).compareTo(mapper.apply(l)));
+	}
+
 	public List<T> end() {
 		return stream.collect(Collectors.toList());
 	}
 
 	public <K> Map<K, T> end(Function<T, K> keyMapper) {
-		return stream.collect(Collectors.toMap(keyMapper, t -> t));
+		return stream.collect(Collectors.toMap(keyMapper, t -> t, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
 	public <K, V> Map<K, V> end(Function<T, K> keyMapper, Function<T, V> valueMapper) {
-		return stream.collect(Collectors.toMap(keyMapper, valueMapper));
+		return stream.collect(Collectors.toMap(keyMapper, valueMapper, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
 	@SuppressWarnings("unchecked")
