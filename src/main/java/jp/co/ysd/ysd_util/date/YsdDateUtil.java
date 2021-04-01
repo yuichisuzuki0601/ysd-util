@@ -49,6 +49,10 @@ public final class YsdDateUtil {
 		return add(date, Calendar.DATE, amount);
 	}
 
+	public static Date getFirstDatetimeOfMonthDate(Date date) {
+		return YsdCalendarUtil.getFirstDatetimeOfMonthCalendar(YsdCalendarUtil.getCalendar(date)).getTime();
+	}
+
 	public static Date getLastDatetimeOfMonthDate(Date date) {
 		return YsdCalendarUtil.getLastDatetimeOfMonthCalendar(YsdCalendarUtil.getCalendar(date)).getTime();
 	}

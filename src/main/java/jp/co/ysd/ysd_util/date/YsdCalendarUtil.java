@@ -82,6 +82,13 @@ public final class YsdCalendarUtil {
 		return getCalendarBuilder(y, M - 1, d).setTimeOfDay(h, m, s).build();
 	}
 
+	public static Calendar getFirstDatetimeOfMonthCalendar(Calendar cal) {
+		Arrays.stream(new Integer[] { DATE, HOUR_OF_DAY, MINUTE, SECOND, MILLISECOND }).forEach((f) -> {
+			cal.set(f, cal.getActualMinimum(f));
+		});
+		return cal;
+	}
+
 	public static Calendar getLastDatetimeOfMonthCalendar(Calendar cal) {
 		Arrays.stream(new Integer[] { DATE, HOUR_OF_DAY, MINUTE, SECOND, MILLISECOND }).forEach((f) -> {
 			cal.set(f, cal.getActualMaximum(f));
