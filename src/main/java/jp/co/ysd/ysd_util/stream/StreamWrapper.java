@@ -75,6 +75,16 @@ public class StreamWrapper<T> {
 		return stream.collect(Collectors.groupingBy(function));
 	}
 
+	// alias for filter
+	public StreamWrapper<T> is(Predicate<T> predicate) {
+		return filter(predicate);
+	}
+
+	// alias for unfilter
+	public StreamWrapper<T> isNot(Predicate<T> predicate) {
+		return unfilter(predicate);
+	}
+
 	public <R> StreamWrapper<R> map(Function<T, R> mapper) {
 		return new StreamWrapper<R>(stream.map(mapper));
 	}
@@ -117,6 +127,10 @@ public class StreamWrapper<T> {
 
 	public <V extends Comparable<V>> StreamWrapper<T> sortDesc(Function<T, V> mapper) {
 		return sort((l, r) -> mapper.apply(r).compareTo(mapper.apply(l)));
+	}
+
+	public StreamWrapper<T> unfilter(Predicate<T> predicate) {
+		return filter(predicate.negate());
 	}
 
 	public List<T> end() {
