@@ -72,7 +72,7 @@ public class StreamWrapper<T> {
 	}
 
 	public <R> Map<R, List<T>> grouping(Function<T, R> function) {
-		return stream.collect(Collectors.groupingBy(function));
+		return stream.collect(Collectors.groupingBy(function, LinkedHashMap::new, Collectors.toList()));
 	}
 
 	// alias for filter
