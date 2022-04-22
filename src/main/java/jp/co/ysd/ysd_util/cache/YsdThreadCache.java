@@ -3,6 +3,7 @@ package jp.co.ysd.ysd_util.cache;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -11,7 +12,7 @@ import java.util.Map;
  */
 public final class YsdThreadCache {
 
-	private static Map<Thread, Map<String, Object>> threadMaps = new HashMap<>();
+	private static Map<Thread, Map<String, Object>> threadMaps = new ConcurrentHashMap<>();
 
 	private static void invalidateDeadThreadCache() {
 		for (Iterator<Thread> it = threadMaps.keySet().iterator(); it.hasNext();) {
